@@ -31,9 +31,8 @@
             this.buttonOpenFile = new System.Windows.Forms.Button();
             this.buttonScanner = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.buttonOpenTable = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // buttonOpenFile
@@ -60,36 +59,35 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
-            // dataGridView1
-            // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(483, 87);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowHeadersWidth = 51;
-            this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(465, 391);
-            this.dataGridView1.TabIndex = 2;
-            // 
             // richTextBox1
             // 
             this.richTextBox1.Location = new System.Drawing.Point(12, 87);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(465, 391);
+            this.richTextBox1.Size = new System.Drawing.Size(402, 391);
             this.richTextBox1.TabIndex = 3;
             this.richTextBox1.Text = "";
+            // 
+            // buttonOpenTable
+            // 
+            this.buttonOpenTable.Location = new System.Drawing.Point(284, 12);
+            this.buttonOpenTable.Name = "buttonOpenTable";
+            this.buttonOpenTable.Size = new System.Drawing.Size(130, 69);
+            this.buttonOpenTable.TabIndex = 4;
+            this.buttonOpenTable.Text = "Открыть таблицы";
+            this.buttonOpenTable.UseVisualStyleBackColor = true;
+            this.buttonOpenTable.Click += new System.EventHandler(this.buttonOpenTable_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(960, 490);
+            this.ClientSize = new System.Drawing.Size(426, 490);
+            this.Controls.Add(this.buttonOpenTable);
             this.Controls.Add(this.richTextBox1);
-            this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.buttonScanner);
             this.Controls.Add(this.buttonOpenFile);
             this.Name = "Form1";
-            this.Text = "Form1";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.Text = "Компилятор С";
             this.ResumeLayout(false);
 
         }
@@ -99,8 +97,8 @@
         private System.Windows.Forms.Button buttonOpenFile;
         private System.Windows.Forms.Button buttonScanner;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
-        private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.Button buttonOpenTable;
     }
 }
 

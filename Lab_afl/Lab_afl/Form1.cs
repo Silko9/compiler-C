@@ -11,8 +11,7 @@ namespace Lab_afl
         {
             InitializeComponent();
             openFileDialog1.Filter = "Text files(*.txt)|*.txt|All files(*.*)|*.*";
-            dataGridView1.ColumnCount = 2;
-            richTextBox1.Text = "void main() {\r\n\tint a, b;\r\n\tswithc(a) {\r\n\t\tcase 1:\r\n\t\t\tb = b + 5;\r\n\t\tcase 2:\r\n\t\t\tb = b - 25;\r\n\t}\t}\r\n";
+            richTextBox1.Text = "void main() {\r\n\tint a, b;\r\n\tswitch(a) {\r\n\t\tcase 1:\r\n\t\t\tb = b + 5;\r\n\t\tcase 2:\r\n\t\t\tb = b - 25;\r\n\t}\t}\r\n";
         }
         private void buttonOpenFile_Click(object sender, EventArgs e)
         {
@@ -33,15 +32,23 @@ namespace Lab_afl
         }
         private void buttonScanner_Click(object sender, EventArgs e)
         {
-            dataGridView1.Rows.Clear();
             richTextBox1.Text += '\n';
             lexical = new LexicalAnalysis(richTextBox1.Text);
             string result = lexical.Scanner();
             if (result == "0")
-                foreach (var item in lexical.data)
-                    dataGridView1.Rows.Add(item.str, item.index);
+                MessageBox.Show("Лексический анализ выполнен успешно.");
             else
                 MessageBox.Show(result);
+        }
+        private void buttonOpenTable_Click(object sender, EventArgs e)
+        {
+            if (lexical != null)
+            {
+                FormTable form = new FormTable(lexical);
+                form.Show();
+            }
+            else
+                MessageBox.Show("Таблицы пустые. Запустите сканер.");
         }
     }
 }

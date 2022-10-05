@@ -2,29 +2,49 @@
 
 namespace Lab_afl
 {
-    internal class LexicalAnalysis
+    public class LexicalAnalysis
     {
         public string stack = "";
-        private string[] separator = new string[11] { "(", ")", "{", "}", ",", ";", ":", "=", "+", "-", "//" };
+        public string[] keywords = new string[9] { "main", "void", "int", "double", "float", "string", "char", "switch", "case" };//ключевые слова(1 таблица)
+        public string[] separator = new string[10] { "(", ")", "{", "}", ",", ";", ":", "=", "+", "-"};//разделители(2 таблица)
+        public List<string> identifier = new List<string>();//индификатор(3 таблица)
+        public List<string> literals = new List<string>();//литерал(4 таблица)
         private int index = -1;
         private char symbol;
         private string str;
-        public List<Data> data = new List<Data>();
+        public List<DataLexeme> dataLexeme = new List<DataLexeme>();//таблица 1 лабы
+        public List<DataClassification> dataClassification = new List<DataClassification>();//таблица 2 лабы
         public LexicalAnalysis(string Str)
         {
             str = Str;
         }
-        public class Data
+        public class DataLexeme
         {
             public string str;
             public char index;
-            public Data(string str, char index)
+            public DataLexeme(string str, char index)
             {
                 this.str = str;
                 this.index = index;
             }
         }
+        public class DataClassification
+        {
+            public int tableType;
+            public int itemNumber;
+            public DataClassification(int tableType, int itemNumber)
+            {
+                this.tableType = tableType;
+                this.itemNumber = itemNumber;
+            }
+        }
         public string Scanner()
+        {
+            string result = LexicalAnalysis_(); //первая лабораторная
+            if (result == "0") ClassificationLexeme(); //вторая лаба
+            return result;
+        }
+        private string LexicalAnalysis_()
         {
             Next();
             while (index <= str.Length)
@@ -51,27 +71,11 @@ namespace Lab_afl
                     Add();
                     Next();
                     if (symbol == '/')
-                        do
-                        {
-                            Next();
-                        } while (symbol != '\n');
+                        LowercaseComment();
                     else
                     {
                         if (symbol == '*')
-                        {
-                            bool flag = true;
-                            do
-                            {
-                                Next();
-                                if (symbol == '*')
-                                {
-                                    Next();
-                                    if (symbol == '/')
-                                        flag = false;
-                                }
-                            } while (flag);
-                            Next();
-                        }
+                            MultilineComment();
                         else
                             return $"Ошибка синтаксиса: символа '{stack[0]}' нету в словаре.";
                     }
@@ -82,6 +86,28 @@ namespace Lab_afl
                     return $"Ошибка синтаксиса: символа '{stack[0]}' нету в словаре.";
             }
             index = -1;
+            return "0";
+        }
+        private string ClassificationLexeme()
+        {
+            for (int l = 0; l < dataLexeme.Count; l++)
+            {
+                switch (dataLexeme[l].index)
+                {
+                    case 'I':
+                        ClassificationI(l);
+                        break;
+                    case 'R':
+                        ClassificationR(l);
+                        break;
+                    case 'D':
+                        ClassificationD(l);
+                        break;
+                    default:
+                        dataClassification.Add(new DataClassification(0, 0));
+                        break;
+                }
+            }
             return "0";
         }
         private bool StatusI()
@@ -142,6 +168,28 @@ namespace Lab_afl
                     return true;
             return false;
         }
+        private void LowercaseComment()
+        {
+            do
+            {
+                Next();
+            } while (symbol != '\n');
+        }
+        private void MultilineComment()
+        {
+            bool flag = true;
+            do
+            {
+                Next();
+                if (symbol == '*')
+                {
+                    Next();
+                    if (symbol == '/')
+                        flag = false;
+                }
+            } while (flag);
+            Next();
+        }
         private void Add()
         {
             stack += symbol;
@@ -154,12 +202,48 @@ namespace Lab_afl
         }
         private void Out(char status)
         {
-            data.Add(new Data(stack, status));
+            dataLexeme.Add(new DataLexeme(stack, status));
         }
         private void Clear()
         {
             stack = "";
         }
+        private void ClassificationI(int l)
+        {
+            for (int k = 0; k < keywords.Length; k++)
+                if (dataLexeme[l].str == keywords[k])
+                {
+                    dataClassification.Add(new DataClassification(1, k));
+                    return;
+                }
+            for (int i = 0; i < identifier.Count; i++)
+                if (identifier[i] == dataLexeme[l].str)
+                {
+                    dataClassification.Add(new DataClassification(3, i));
+                    return;
+                }
+            dataClassification.Add(new DataClassification(3, identifier.Count));
+            identifier.Add(dataLexeme[l].str);
+        }
+        private void ClassificationR(int l)
+        {
+            for (int s = 0; s < separator.Length; s++)
+                if (dataLexeme[l].str == separator[s])
+                {
+                    dataClassification.Add(new DataClassification(2, s));
+                    return;
+                }
+        }
+        private void ClassificationD(int l)
+        {
+            for (int i = 0; i < literals.Count; i++)
+                if (literals[i] == dataLexeme[l].str)
+                {
+                    dataClassification.Add(new DataClassification(4, i));
+                    return;
+                }
+            dataClassification.Add(new DataClassification(4, literals.Count));
+            literals.Add(dataLexeme[l].str);
+        }
     }
 }
-

@@ -29,31 +29,35 @@
         private void InitializeComponent()
         {
             this.buttonOpenFile = new System.Windows.Forms.Button();
-            this.buttonScanner = new System.Windows.Forms.Button();
+            this.buttonScannerLexical = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.buttonOpenTable = new System.Windows.Forms.Button();
+            this.buttonScannerSyntactic = new System.Windows.Forms.Button();
+            this.richTextBox2 = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // buttonOpenFile
             // 
             this.buttonOpenFile.Location = new System.Drawing.Point(12, 12);
+            this.buttonOpenFile.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonOpenFile.Name = "buttonOpenFile";
-            this.buttonOpenFile.Size = new System.Drawing.Size(130, 69);
+            this.buttonOpenFile.Size = new System.Drawing.Size(131, 69);
             this.buttonOpenFile.TabIndex = 0;
             this.buttonOpenFile.Text = "Открыть файл";
             this.buttonOpenFile.UseVisualStyleBackColor = true;
             this.buttonOpenFile.Click += new System.EventHandler(this.buttonOpenFile_Click);
             // 
-            // buttonScanner
+            // buttonScannerLexical
             // 
-            this.buttonScanner.Location = new System.Drawing.Point(148, 12);
-            this.buttonScanner.Name = "buttonScanner";
-            this.buttonScanner.Size = new System.Drawing.Size(130, 69);
-            this.buttonScanner.TabIndex = 1;
-            this.buttonScanner.Text = "Запустить сканер";
-            this.buttonScanner.UseVisualStyleBackColor = true;
-            this.buttonScanner.Click += new System.EventHandler(this.buttonScanner_Click);
+            this.buttonScannerLexical.Location = new System.Drawing.Point(148, 12);
+            this.buttonScannerLexical.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonScannerLexical.Name = "buttonScannerLexical";
+            this.buttonScannerLexical.Size = new System.Drawing.Size(131, 69);
+            this.buttonScannerLexical.TabIndex = 1;
+            this.buttonScannerLexical.Text = "Запустить сканер лексики";
+            this.buttonScannerLexical.UseVisualStyleBackColor = true;
+            this.buttonScannerLexical.Click += new System.EventHandler(this.buttonScannerLexical_Click);
             // 
             // openFileDialog1
             // 
@@ -62,30 +66,58 @@
             // richTextBox1
             // 
             this.richTextBox1.Location = new System.Drawing.Point(12, 87);
+            this.richTextBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(402, 391);
+            this.richTextBox1.Size = new System.Drawing.Size(537, 390);
             this.richTextBox1.TabIndex = 3;
             this.richTextBox1.Text = "";
+            this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
             // 
             // buttonOpenTable
             // 
             this.buttonOpenTable.Location = new System.Drawing.Point(284, 12);
+            this.buttonOpenTable.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonOpenTable.Name = "buttonOpenTable";
-            this.buttonOpenTable.Size = new System.Drawing.Size(130, 69);
+            this.buttonOpenTable.Size = new System.Drawing.Size(131, 69);
             this.buttonOpenTable.TabIndex = 4;
             this.buttonOpenTable.Text = "Открыть таблицы";
             this.buttonOpenTable.UseVisualStyleBackColor = true;
             this.buttonOpenTable.Click += new System.EventHandler(this.buttonOpenTable_Click);
             // 
+            // buttonScannerSyntactic
+            // 
+            this.buttonScannerSyntactic.Enabled = false;
+            this.buttonScannerSyntactic.Location = new System.Drawing.Point(420, 12);
+            this.buttonScannerSyntactic.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonScannerSyntactic.Name = "buttonScannerSyntactic";
+            this.buttonScannerSyntactic.Size = new System.Drawing.Size(131, 69);
+            this.buttonScannerSyntactic.TabIndex = 5;
+            this.buttonScannerSyntactic.Text = "Запустить сканер синтакиса";
+            this.buttonScannerSyntactic.UseVisualStyleBackColor = true;
+            this.buttonScannerSyntactic.Click += new System.EventHandler(this.buttonScannerSyntactic_Click);
+            // 
+            // richTextBox2
+            // 
+            this.richTextBox2.Location = new System.Drawing.Point(12, 481);
+            this.richTextBox2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.richTextBox2.Name = "richTextBox2";
+            this.richTextBox2.ReadOnly = true;
+            this.richTextBox2.Size = new System.Drawing.Size(537, 92);
+            this.richTextBox2.TabIndex = 6;
+            this.richTextBox2.Text = "";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(426, 490);
+            this.ClientSize = new System.Drawing.Size(565, 584);
+            this.Controls.Add(this.richTextBox2);
+            this.Controls.Add(this.buttonScannerSyntactic);
             this.Controls.Add(this.buttonOpenTable);
             this.Controls.Add(this.richTextBox1);
-            this.Controls.Add(this.buttonScanner);
+            this.Controls.Add(this.buttonScannerLexical);
             this.Controls.Add(this.buttonOpenFile);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "Form1";
             this.Text = "Компилятор С";
             this.ResumeLayout(false);
@@ -95,10 +127,12 @@
         #endregion
 
         private System.Windows.Forms.Button buttonOpenFile;
-        private System.Windows.Forms.Button buttonScanner;
+        private System.Windows.Forms.Button buttonScannerLexical;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Button buttonOpenTable;
+        private System.Windows.Forms.Button buttonScannerSyntactic;
+        private System.Windows.Forms.RichTextBox richTextBox2;
     }
 }
 

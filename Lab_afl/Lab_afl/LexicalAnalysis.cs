@@ -5,7 +5,7 @@ namespace Lab_afl
     public class LexicalAnalysis
     {
         public string stack = "";
-        public string[] keywords = new string[9] { "main", "void", "int", "double", "float", "string", "char", "switch", "case" };//ключевые слова(1 таблица)
+        public string[] keywords = new string[11] { "main", "void", "int", "double", "float", "string", "char", "switch", "case", "break", "default" };//ключевые слова(1 таблица)
         public string[] separator = new string[10] { "(", ")", "{", "}", ",", ";", ":", "=", "+", "-"};//разделители(2 таблица)
         public List<string> identifier = new List<string>();//индификатор(3 таблица)
         public List<string> literals = new List<string>();//литерал(4 таблица)
@@ -14,21 +14,23 @@ namespace Lab_afl
         private string str;
         public List<DataLexeme> dataLexeme = new List<DataLexeme>();//таблица 1 лабы
         public List<DataClassification> dataClassification = new List<DataClassification>();//таблица 2 лабы
+        string error;
+        public enum Index { I, D, R}
         public LexicalAnalysis(string Str)
         {
             str = Str;
         }
-        public class DataLexeme
+        public struct DataLexeme
         {
             public string str;
-            public char index;
-            public DataLexeme(string str, char index)
+            public Index index;
+            public DataLexeme(string str, Index index)
             {
                 this.str = str;
                 this.index = index;
             }
         }
-        public class DataClassification
+        public struct DataClassification
         {
             public int tableType;
             public int itemNumber;
@@ -77,13 +79,13 @@ namespace Lab_afl
                         if (symbol == '*')
                             MultilineComment();
                         else
-                            return $"Ошибка синтаксиса: символа '{stack[0]}' нету в словаре.";
+                            return $"Ошибка синтаксиса: символа '{error}' нету в словаре.";
                     }
                     Clear();
                     continue;
                 }
                 if (!StatusR())
-                    return $"Ошибка синтаксиса: символа '{stack[0]}' нету в словаре.";
+                    return $"Ошибка синтаксиса: символа '{error}' нету в словаре.";
             }
             index = -1;
             return "0";
@@ -94,13 +96,13 @@ namespace Lab_afl
             {
                 switch (dataLexeme[l].index)
                 {
-                    case 'I':
+                    case Index.I:
                         ClassificationI(l);
                         break;
-                    case 'R':
+                    case Index.R:
                         ClassificationR(l);
                         break;
-                    case 'D':
+                    case Index.D:
                         ClassificationD(l);
                         break;
                     default:
@@ -125,7 +127,7 @@ namespace Lab_afl
             {
                 if (stack.Length > 8)
                     return false;
-                Out('I');
+                Out(Index.I);
                 Clear();
                 return true;
             }
@@ -140,7 +142,7 @@ namespace Lab_afl
             {
                 if (char.IsLetter(symbol))
                     return false;
-                Out('D');
+                Out(Index.D);
                 Clear();
             }
             return true;
@@ -149,17 +151,35 @@ namespace Lab_afl
         {
             Add();
             Next();
-            if (char.IsSymbol(symbol))
-                StatusR();
+            if (IsSeparator(stack))
+                Out(Index.R);
             else
             {
-                if (IsSeparator(stack))
-                    Out('R');
-                else
-                    return false;
+                error = stack;
                 Clear();
+                return false;
             }
+            Clear();
             return true;
+
+            //Add();
+            //Next();
+            //if (char.IsSymbol(symbol))
+            //    StatusR();
+
+            //    else
+            //        {
+            //        if (IsSeparator(stack))
+            //            Out(Index.R);
+            //        else
+            //        {
+            //            error = stack;
+            //            Clear();//
+            //            return false;
+            //        }
+            //        Clear();
+            //    }
+            //return true;
         }
         private bool IsSeparator(string a)
         {
@@ -200,7 +220,7 @@ namespace Lab_afl
             if (index < str.Length)
                 symbol = str[index];
         }
-        private void Out(char status)
+        private void Out(Index status)
         {
             dataLexeme.Add(new DataLexeme(stack, status));
         }

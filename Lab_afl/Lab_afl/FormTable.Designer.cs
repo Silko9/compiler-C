@@ -162,7 +162,7 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(107, 16);
             this.label5.TabIndex = 11;
-            this.label5.Text = "Индефикаторы";
+            this.label5.Text = "Индификаторы";
             // 
             // label6
             // 

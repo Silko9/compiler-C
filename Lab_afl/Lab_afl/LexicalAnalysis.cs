@@ -14,7 +14,9 @@ namespace Lab_afl
         private string str;
         public List<DataLexeme> dataLexeme = new List<DataLexeme>();//таблица 1 лабы
         public List<DataClassification> dataClassification = new List<DataClassification>();//таблица 2 лабы
-        string error;
+        private string error;
+        public string Error { get { return error; } }
+        private string stackError;
         public enum Index { I, D, R}
         public LexicalAnalysis(string Str)
         {
@@ -40,13 +42,11 @@ namespace Lab_afl
                 this.itemNumber = itemNumber;
             }
         }
-        public string Scanner()
+        public bool Scanner()
         {
-            string result = LexicalAnalysis_(); //первая лабораторная
-            if (result == "0") ClassificationLexeme(); //вторая лаба
-            return result;
+            return LexicalAnalysis_();
         }
-        private string LexicalAnalysis_()
+        private bool LexicalAnalysis_()
         {
             Next();
             while (index <= str.Length)
@@ -54,13 +54,19 @@ namespace Lab_afl
                 if (char.IsLetter(symbol))
                 {
                     if (!StatusI())
-                        return "Идентификатор не может быть больше 8 символов.";
+                    {
+                        error = "Идентификатор не может быть больше 8 символов.";
+                        return false;
+                    }
                     continue;
                 }
                 if (char.IsNumber(symbol))
                 {
                     if (!StatusD())
-                        return "Идентификатор не может начинаться с цифры.";
+                    {
+                        error = "Идентификатор не может начинаться с цифры.";
+                        return false;
+                    }
                     continue;
                 }
                 if (symbol == ' ' || symbol == '\n' || symbol == '\t')
@@ -79,18 +85,25 @@ namespace Lab_afl
                         if (symbol == '*')
                             MultilineComment();
                         else
-                            return $"Ошибка синтаксиса: символа '{error}' нету в словаре.";
+                        {
+                            error = $"Ошибка синтаксиса: символа '{stackError}' нет в словаре.";
+                            return false;
+                        }
                     }
                     Clear();
                     continue;
                 }
                 if (!StatusR())
-                    return $"Ошибка синтаксиса: символа '{error}' нету в словаре.";
+                {
+                    error = $"Ошибка синтаксиса: символа '{stackError}' нет в словаре.";
+                    return false;
+                }
             }
             index = -1;
-            return "0";
+            ClassificationLexeme();
+            return true;
         }
-        private string ClassificationLexeme()
+        private void ClassificationLexeme()
         {
             for (int l = 0; l < dataLexeme.Count; l++)
             {
@@ -110,7 +123,6 @@ namespace Lab_afl
                         break;
                 }
             }
-            return "0";
         }
         private bool StatusI()
         {
@@ -155,31 +167,12 @@ namespace Lab_afl
                 Out(Index.R);
             else
             {
-                error = stack;
+                stackError = stack;
                 Clear();
                 return false;
             }
             Clear();
             return true;
-
-            //Add();
-            //Next();
-            //if (char.IsSymbol(symbol))
-            //    StatusR();
-
-            //    else
-            //        {
-            //        if (IsSeparator(stack))
-            //            Out(Index.R);
-            //        else
-            //        {
-            //            error = stack;
-            //            Clear();//
-            //            return false;
-            //        }
-            //        Clear();
-            //    }
-            //return true;
         }
         private bool IsSeparator(string a)
         {

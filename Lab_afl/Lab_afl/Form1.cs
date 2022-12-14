@@ -32,22 +32,6 @@ namespace Lab_afl
                 sr.Close();
             }
         }
-        private void buttonScannerLexical_Click(object sender, EventArgs e)
-        {
-            richTextBox1.Text += '\n';
-            lexical = new LexicalAnalysis(richTextBox1.Text);
-            string result = lexical.Scanner();
-            if (result == "0")
-            {
-                MessageBox.Show("Лексический анализ выполнен успешно.");
-                EnabledButton(true);
-            }
-            else
-            {
-                MessageBox.Show(result);
-                EnabledButton(false);
-            }
-        }
         private void buttonOpenTable_Click(object sender, EventArgs e)
         {
             if (lexical != null)
@@ -59,40 +43,25 @@ namespace Lab_afl
                 MessageBox.Show("Таблицы пустые. Запустите сканер.");
         }
 
-        private void buttonScannerSyntactic_Click(object sender, EventArgs e)
-        {
-            syntactic = new SyntacticAnalysis(lexical, lexical.dataClassification);
-            if (syntactic.Scanner())
-                MessageBox.Show("успешно");
-            else
-                MessageBox.Show(syntactic.error);
-        }
-
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
             int i = richTextBox1.SelectionStart;
             richTextBox1.Text += '\n';
             lexical = new LexicalAnalysis(richTextBox1.Text);
-            string result = lexical.Scanner();
-            if (result == "0")
+            if (lexical.Scanner())
             {
                 syntactic = new SyntacticAnalysis(lexical, lexical.dataClassification);
                 if (syntactic.Scanner())
                     richTextBox2.Text = "ошибок нет";
                 else
-                    richTextBox2.Text = syntactic.error;
+                    richTextBox2.Text = syntactic.Error;
             }
             else
             {
-                richTextBox2.Text = result;
+                richTextBox2.Text = lexical.Error;
             }
             richTextBox1.Text = richTextBox1.Text.Remove(richTextBox1.Text.Length - 1);
             richTextBox1.SelectionStart = i;
-        }
-        private void EnabledButton(bool flag)
-        {
-            buttonOpenTable.Enabled = flag;
-            buttonScannerSyntactic.Enabled = flag;
         }
     }
 }

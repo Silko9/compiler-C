@@ -13,7 +13,8 @@ namespace Lab_afl
         List<DataClassification> dataClassification;
         string Lexem;
         int index = -1;
-        public string error = "пусто";
+        private string error = "пусто";
+        public string Error { get { return error; } }
         public SyntacticAnalysis(LexicalAnalysis lexicalAnalysis, List<DataClassification> dataClassification)
         {
             this.lexicalAnalysis = lexicalAnalysis;
@@ -35,7 +36,7 @@ namespace Lab_afl
         }
         private void CreateError(string expectedLexem)
         {
-            error = $"Ожидалось \"{expectedLexem}\"\nВстретилось \"{Lexem}\"";
+            error = $"Ожидался \"{expectedLexem}\"\nВстретилось '{Lexem}'";
         }
         private bool Next(string expectedLexem)
         {
@@ -47,7 +48,7 @@ namespace Lab_afl
             }
             catch
             {
-                error = $"Ожидалось \"{expectedLexem}\"";
+                error = $"Ожидался '{expectedLexem}'";
                 return false;
             }
         }
@@ -60,7 +61,11 @@ namespace Lab_afl
             if (!CheakLexem("{") || !Next("оператор")) return false;
             if (!Procedure_список_операторов()) return false;
             if (!CheakLexem("}")) return false;
-            if (Next("конец программы")) return false;
+            if (Next("конец программы"))
+            {
+                error = "Символы за пределами программы.";
+                return false;
+            }
             return true;
         }
         private bool Procedure_список_операторов()
@@ -81,7 +86,7 @@ namespace Lab_afl
             CreateError("оператор");
             return false;
         }
-        
+
         private bool Procedure_оператор()
         {
             if (Lexem == "int" || Lexem == "double" || Lexem == "float" || Lexem == "string" || Lexem == "char")
@@ -94,10 +99,13 @@ namespace Lab_afl
                 if (!Procedure_условный_оператор()) return false;
                 return true;
             }
-            //иф лексема равна id елсе ошиька ожидался оператор
-            //проверить аналогичные ситуации
-            if (!Procedure_присваивание()) return false;
-            return true;
+            if (Lexem == "id")
+            {
+                if (!Procedure_присваивание()) return false;
+                return true;
+            }
+            CreateError("оператор");
+            return false;
         }
         private bool Procedure_объявление_переменной()
         {
@@ -239,7 +247,7 @@ namespace Lab_afl
         }
         private bool Procedure_присваивание()
         {
-            if (!CheakLexem("id") || !Next("'=")) return false;
+            if (!CheakLexem("id") || !Next("'='")) return false;
             if (!CheakLexem("=") || !Next("'expr'")) return false;
             Expr();
             if (!CheakLexem(";") || !Next("'}' или оператор")) return false;
@@ -265,7 +273,6 @@ namespace Lab_afl
                     case 4: return "lit";
                     default: return "error";
                 }
-
         }
         private void Expr()
         {

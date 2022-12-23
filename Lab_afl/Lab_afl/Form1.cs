@@ -2,18 +2,18 @@
 using System.IO;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-
 namespace Lab_afl
 {
     public partial class Form1 : Form
     {
         LexicalAnalysis lexical;
         SyntacticAnalysis syntactic;
+        AnalysisBauerSamelsohn analysis;
         public Form1()
         {
             InitializeComponent();
             openFileDialog1.Filter = "Text files(*.txt)|*.txt|All files(*.*)|*.*";
-            richTextBox1.Text = "void main() {\r\n\tint a, b;\r\n\tswitch(a) {\r\n\t\tcase 1:\r\n\t\t\tb = b + 5;\r\n\t\tcase 2:\r\n\t\t\tb = b - 25;\r\n\t}\t}\r\n";
+            richTextBox1.Text = "void main() {\r\na = 5+5;\r\n}\r\n";
         }
         private void buttonOpenFile_Click(object sender, EventArgs e)
         {
@@ -36,7 +36,7 @@ namespace Lab_afl
         {
             if (lexical != null)
             {
-                FormTable form = new FormTable(lexical);
+                FormTable form = new FormTable(lexical, syntactic);
                 form.Show();
             }
             else
@@ -55,6 +55,7 @@ namespace Lab_afl
                     richTextBox2.Text = "ошибок нет";
                 else
                     richTextBox2.Text = syntactic.Error;
+                analysis = syntactic.analysisBauerSamelsohn;
             }
             else
             {

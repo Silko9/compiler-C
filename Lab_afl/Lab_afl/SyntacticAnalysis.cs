@@ -1,24 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using static Lab_afl.LexicalAnalysis;
-
+using static Lab_afl.AnalysisBauerSamelsohn;
 namespace Lab_afl
 {
-    internal class SyntacticAnalysis
+    public class SyntacticAnalysis
     {
         LexicalAnalysis lexicalAnalysis;
+        public AnalysisBauerSamelsohn analysisBauerSamelsohn;
+        public List<OperationMatrix> arithmeticOperatorMatrix = new List<OperationMatrix>();
         List<DataClassification> dataClassification;
         string Lexem;
         int index = -1;
+        int indexMatrix = 0;
         private string error = "пусто";
         public string Error { get { return error; } }
         public SyntacticAnalysis(LexicalAnalysis lexicalAnalysis, List<DataClassification> dataClassification)
         {
             this.lexicalAnalysis = lexicalAnalysis;
             this.dataClassification = dataClassification;
+        }
+        public struct OperationMatrix
+        {
+            public int id;
+            public Operation operation;
+            public OperationMatrix(int id, Operation operation)
+            {
+                this.id = id;
+                this.operation = operation;
+            }
         }
         public bool Scanner()
         {
@@ -36,7 +45,7 @@ namespace Lab_afl
         }
         private void CreateError(string expectedLexem)
         {
-            error = $"Ожидался \"{expectedLexem}\"\nВстретилось '{Lexem}'";
+            error = $"Требуется {expectedLexem}\nВстретилось '{Lexem}'";
         }
         private bool Next(string expectedLexem)
         {
@@ -86,7 +95,6 @@ namespace Lab_afl
             CreateError("оператор");
             return false;
         }
-
         private bool Procedure_оператор()
         {
             if (Lexem == "int" || Lexem == "double" || Lexem == "float" || Lexem == "string" || Lexem == "char")
@@ -249,7 +257,7 @@ namespace Lab_afl
         {
             if (!CheakLexem("id") || !Next("'='")) return false;
             if (!CheakLexem("=") || !Next("'expr'")) return false;
-            Expr();
+            if(!Expr()) return false;
             if (!CheakLexem(";") || !Next("'}' или оператор")) return false;
             return true;
         }
@@ -274,10 +282,35 @@ namespace Lab_afl
                     default: return "error";
                 }
         }
-        private void Expr()
+        private bool Expr()
         {
-            index += 2;
-            Next("ошибка expr");
+            List<DataClassification> array = new List<DataClassification>();
+            while(Lexem != ";")
+            {
+                if(dataClassification.Count == index)
+                {
+                    error = "Требуется операция";
+                    return false;
+                }
+                array.Add(dataClassification[index]);
+                Next("';'");
+            }
+            if(array.Count == 0)
+            {
+                CreateError("'id' или 'lit'");
+                return false;
+            }
+            analysisBauerSamelsohn = new AnalysisBauerSamelsohn(array, lexicalAnalysis);
+            if(!analysisBauerSamelsohn.Scanner())
+            {
+                error = analysisBauerSamelsohn.Error;
+                return false;
+            }
+            List<Operation> operations = analysisBauerSamelsohn.arithmeticOperatorMatrix;
+            indexMatrix++;
+            foreach (var item in operations)
+                arithmeticOperatorMatrix.Add(new OperationMatrix(indexMatrix, item));
+            return true;
         }
     }
 }

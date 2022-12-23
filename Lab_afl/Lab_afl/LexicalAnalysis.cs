@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-
 namespace Lab_afl
 {
     public class LexicalAnalysis
     {
         public string stack = "";
         public string[] keywords = new string[11] { "main", "void", "int", "double", "float", "string", "char", "switch", "case", "break", "default" };//ключевые слова(1 таблица)
-        public string[] separator = new string[10] { "(", ")", "{", "}", ",", ";", ":", "=", "+", "-"};//разделители(2 таблица)
+        public string[] separator = new string[12] { "(", ")", "{", "}", ",", ";", ":", "=", "+", "-", "*", "/"};//разделители(2 таблица)
         public List<string> identifier = new List<string>();//индификатор(3 таблица)
         public List<string> literals = new List<string>();//литерал(4 таблица)
         private int index = -1;
@@ -79,19 +78,30 @@ namespace Lab_afl
                     Add();
                     Next();
                     if (symbol == '/')
+                    {
                         LowercaseComment();
+                        Clear();
+                        continue;
+                    }
                     else
                     {
                         if (symbol == '*')
-                            MultilineComment();
+                        {
+                            if (!MultilineComment())
+                            {
+                                error = "Требуется */";
+                                return false;
+                            }
+                            Clear();
+                            continue;
+                        }
                         else
                         {
-                            error = $"Ошибка синтаксиса: символа '{stackError}' нет в словаре.";
-                            return false;
+                            index--;
+                            Clear();
+                            symbol = '/';
                         }
                     }
-                    Clear();
-                    continue;
                 }
                 if (!StatusR())
                 {
@@ -188,12 +198,13 @@ namespace Lab_afl
                 Next();
             } while (symbol != '\n');
         }
-        private void MultilineComment()
+        private bool MultilineComment()
         {
             bool flag = true;
             do
             {
-                Next();
+                if (!Next())
+                    return false;
                 if (symbol == '*')
                 {
                     Next();
@@ -201,17 +212,20 @@ namespace Lab_afl
                         flag = false;
                 }
             } while (flag);
-            Next();
+            return Next();
         }
         private void Add()
         {
             stack += symbol;
         }
-        private void Next()
+        private bool Next()
         {
             index++;
             if (index < str.Length)
                 symbol = str[index];
+            else
+                return false;
+            return true;
         }
         private void Out(Index status)
         {

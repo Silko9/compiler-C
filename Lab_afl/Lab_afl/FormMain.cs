@@ -5,9 +5,8 @@ namespace Lab_afl
 {
     public partial class FormMain : Form
     {
-        LexicalAnalysis lexical;
-        SyntacticAnalysis syntactic;
         FormTable form;
+        Translator translator = new Translator();
         public FormMain()
         {
             InitializeComponent();
@@ -34,11 +33,11 @@ namespace Lab_afl
         }
         private void buttonOpenTable_Click(object sender, EventArgs e)
         {
-            if (lexical != null)
+            if (translator.Lexical != null)
             {
                 if (form != null)
                     form.Close();
-                form = new FormTable(lexical, syntactic);
+                form = new FormTable(translator.Lexical, translator.Syntactic);
                 form.Show();
             }
             else
@@ -53,17 +52,10 @@ namespace Lab_afl
         {
             int i = richTextBox1.SelectionStart;
             richTextBox1.Text += '\n';
-            lexical = new LexicalAnalysis(richTextBox1.Text);
-            if (lexical.Scanner())
-            {
-                syntactic = new SyntacticAnalysis(lexical);
-                if (syntactic.Scanner())
-                    richTextBox2.Text = "Ошибок нет";
-                else
-                    richTextBox2.Text = syntactic.Error;
-            }
+            if (translator.Scanner(richTextBox1.Text))
+                richTextBox2.Text = "Ошибок нет.";
             else
-                richTextBox2.Text = lexical.Error;
+                richTextBox2.Text = translator.Error;
             richTextBox1.Text = richTextBox1.Text.Remove(richTextBox1.Text.Length - 1);
             richTextBox1.SelectionStart = i;
         }

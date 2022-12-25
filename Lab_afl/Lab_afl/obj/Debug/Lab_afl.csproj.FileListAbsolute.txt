@@ -14,10 +14,10 @@ C:\Users\Andreu\source\repos\compiler-C\Lab_afl\Lab_afl\bin\Debug\Lab_afl.exe
 C:\Users\Andreu\source\repos\compiler-C\Lab_afl\Lab_afl\bin\Debug\Lab_afl.pdb
 C:\Users\Andreu\source\repos\compiler-C\Lab_afl\Lab_afl\obj\Debug\Lab_afl.csproj.AssemblyReference.cache
 C:\Users\Andreu\source\repos\compiler-C\Lab_afl\Lab_afl\obj\Debug\Lab_afl.csproj.SuggestedBindingRedirects.cache
-C:\Users\Andreu\source\repos\compiler-C\Lab_afl\Lab_afl\obj\Debug\Lab_afl.Form1.resources
 C:\Users\Andreu\source\repos\compiler-C\Lab_afl\Lab_afl\obj\Debug\Lab_afl.Properties.Resources.resources
 C:\Users\Andreu\source\repos\compiler-C\Lab_afl\Lab_afl\obj\Debug\Lab_afl.csproj.GenerateResource.cache
 C:\Users\Andreu\source\repos\compiler-C\Lab_afl\Lab_afl\obj\Debug\Lab_afl.csproj.CoreCompileInputs.cache
 C:\Users\Andreu\source\repos\compiler-C\Lab_afl\Lab_afl\obj\Debug\Lab_afl.exe
 C:\Users\Andreu\source\repos\compiler-C\Lab_afl\Lab_afl\obj\Debug\Lab_afl.pdb
 C:\Users\Andreu\source\repos\compiler-C\Lab_afl\Lab_afl\obj\Debug\Lab_afl.FormTable.resources
+C:\Users\Andreu\source\repos\compiler-C\Lab_afl\Lab_afl\obj\Debug\Lab_afl.FormMain.resources

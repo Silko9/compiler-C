@@ -14,10 +14,10 @@ namespace Lab_afl
         int indexMatrix = 0;
         private string error = "пусто";
         public string Error { get { return error; } }
-        public SyntacticAnalysis(LexicalAnalysis lexicalAnalysis, List<DataClassification> dataClassification)
+        public SyntacticAnalysis(LexicalAnalysis lexicalAnalysis)
         {
             this.lexicalAnalysis = lexicalAnalysis;
-            this.dataClassification = dataClassification;
+            dataClassification = lexicalAnalysis.dataClassification;
         }
         public struct OperationMatrix
         {
@@ -45,7 +45,7 @@ namespace Lab_afl
         }
         private void CreateError(string expectedLexem)
         {
-            error = $"Требуется {expectedLexem}\nВстретилось '{Lexem}'";
+            error = $"Ошибка синтаксиса.\nТребуется '{expectedLexem}'\nВстретилось '{Lexem}'";
         }
         private bool Next(string expectedLexem)
         {
@@ -57,22 +57,22 @@ namespace Lab_afl
             }
             catch
             {
-                error = $"Ожидался '{expectedLexem}'";
+                error = $"Ошибка синтаксиса.\nТребуется {expectedLexem}";
                 return false;
             }
         }
         private bool Procedure_программа()
         {
-            if (!CheakLexem("void") || !Next("main")) return false;
-            if (!CheakLexem("main") || !Next("(")) return false;
-            if (!CheakLexem("(") || !Next(")")) return false;
-            if (!CheakLexem(")") || !Next("{")) return false;
-            if (!CheakLexem("{") || !Next("оператор")) return false;
+            if (!CheakLexem("void") || !Next("'main'")) return false;
+            if (!CheakLexem("main") || !Next("'('")) return false;
+            if (!CheakLexem("(") || !Next("')'")) return false;
+            if (!CheakLexem(")") || !Next("'{'")) return false;
+            if (!CheakLexem("{") || !Next("'int' или 'double' или 'float' или 'string' или 'char' или 'switch' или 'id'")) return false;
             if (!Procedure_список_операторов()) return false;
             if (!CheakLexem("}")) return false;
-            if (Next("конец программы"))
+            if (Next(""))
             {
-                error = "Символы за пределами программы.";
+                error = "Ошибка синтаксиса.\nСимволы за пределами программы.";
                 return false;
             }
             return true;
@@ -92,7 +92,7 @@ namespace Lab_afl
                 if (!Procedure_список_операторов()) return false;
                 return true;
             }
-            CreateError("оператор");
+            CreateError("'int' или 'double' или 'float' или 'string' или 'char' или 'switch' или 'id'");
             return false;
         }
         private bool Procedure_оператор()
@@ -112,14 +112,14 @@ namespace Lab_afl
                 if (!Procedure_присваивание()) return false;
                 return true;
             }
-            CreateError("оператор");
+            CreateError("'int' или 'double' или 'float' или 'string' или 'char' или 'switch' или 'id'");
             return false;
         }
         private bool Procedure_объявление_переменной()
         {
             if (!Procedure_тип()) return false;
             if (!Procedure_список_переменных()) return false;
-            if (!CheakLexem(";") || !Next("оператор или '}'")) return false;
+            if (!CheakLexem(";") || !Next("'int' или 'double' или 'float' или 'string' или 'char' или 'switch' или 'id' или '}'")) return false;
             return true;
         }
         private bool Procedure_тип()
@@ -142,12 +142,12 @@ namespace Lab_afl
                 if (!Procedure_список_переменных_U()) return false;
                 return true;
             }
-            CreateError("',' или ';'");
+            CreateError(",' или ';");
             return false;
         }
         private bool Procedure_список_переменных_U()
         {
-            if (!Next("id")) return false;
+            if (!Next("'id'")) return false;
             if (!CheakLexem("id") || !Next("',' или ';'")) return false;
             if (!Procedure_список_переменных_X()) return false;
             return true;
@@ -167,18 +167,18 @@ namespace Lab_afl
         {
             if (Lexem == "}")
             {
-                if (!Next("'}' или оператор")) return false;
+                if (!Next("'}' или 'int' или 'double' или 'float' или 'string' или 'char' или 'switch' или 'id'")) return false;
                 return true;
             }
             if (Lexem == "default")
             {
                 if (!Next("':'")) return false;
-                if (!CheakLexem(":") || !Next("'оператор'")) return false;
+                if (!CheakLexem(":") || !Next("'int' или 'double' или 'float' или 'string' или 'char' или 'switch' или 'id'")) return false;
                 if (!Procedure_список_операторов_case()) return false;
                 if (!Procedure_условный_оператор_X()) return false;
                 return true;
             }
-            CreateError("'}' или 'default'");
+            CreateError("}' или 'default");
             return false;
         }
         private bool Procedure_условный_оператор_X()
@@ -189,10 +189,10 @@ namespace Lab_afl
             {
                 if (!Next("';'")) return false;
                 if (!CheakLexem(";") || !Next("'}'")) return false;
-                if (!CheakLexem("}") || !Next("'оператор' или '}'")) return false;
+                if (!CheakLexem("}") || !Next("'int' или 'double' или 'float' или 'string' или 'char' или 'switch' или 'id' или '}'")) return false;
                 return true;
             }
-            CreateError("'}' или 'break'");
+            CreateError("}' или 'break");
             return false;
         }
         private bool Procedure_список_блоков_операторов()
@@ -210,14 +210,14 @@ namespace Lab_afl
                 if (!Procedure_список_блоков_операторов()) return false;
                 return true;
             }
-            CreateError("'}' или 'case' или 'default'");
+            CreateError("}' или 'case' или 'default");
             return false;
         }
         private bool Procedure_блок_операторов()
         {
-            if (!CheakLexem("case") || !Next("'операнд'")) return false;
+            if (!CheakLexem("case") || !Next("'id' или 'lit'")) return false;
             if (!Procedure_операнд()) return false;
-            if (!CheakLexem(":") || !Next("'оператор'")) return false;
+            if (!CheakLexem(":") || !Next("'int' или 'double' или 'float' или 'string' или 'char' или 'switch' или 'id'")) return false;
             if (!Procedure_список_операторов_case()) return false;
             if (!Procedure_блок_операторов_U()) return false;
             return true;
@@ -232,7 +232,7 @@ namespace Lab_afl
                 if (!CheakLexem(";") || !Next("'}' или 'case' или 'default'")) return false;
                 return true;
             }
-            CreateError("'}' или 'case' или 'default' или 'break'");
+            CreateError("}' или 'case' или 'default' или 'break");
             return false;
         }
         private bool Procedure_список_операторов_case()
@@ -250,7 +250,7 @@ namespace Lab_afl
                 if (!Procedure_список_операторов_case()) return false;
                 return true;
             }
-            CreateError("'}' или 'case' или 'default' или 'break' или 'оператор'");
+            CreateError("}' или 'case' или 'default' или 'break' или 'int' или 'double' или 'float' или 'string' или 'char' или 'switch' или 'id");
             return false;
         }
         private bool Procedure_присваивание()
@@ -258,7 +258,7 @@ namespace Lab_afl
             if (!CheakLexem("id") || !Next("'='")) return false;
             if (!CheakLexem("=") || !Next("'expr'")) return false;
             if(!Expr()) return false;
-            if (!CheakLexem(";") || !Next("'}' или оператор")) return false;
+            if (!CheakLexem(";") || !Next("'}' или 'int' или 'double' или 'float' или 'string' или 'char' или 'switch' или 'id'")) return false;
             return true;
         }
         private bool Procedure_операнд()
@@ -268,7 +268,7 @@ namespace Lab_afl
                 if (!Next("':'")) return false;
                 return true;
             }
-            CreateError("операнд");
+            CreateError("id' или 'lit");
             return false;
         }
         private string GetLit(int table, int element)
@@ -289,7 +289,7 @@ namespace Lab_afl
             {
                 if(dataClassification.Count == index)
                 {
-                    error = "Требуется операция";
+                    error = "Ошибка синтаксиса.\nТребуется ';' в конце операции.";
                     return false;
                 }
                 array.Add(dataClassification[index]);
@@ -297,7 +297,7 @@ namespace Lab_afl
             }
             if(array.Count == 0)
             {
-                CreateError("'id' или 'lit'");
+                CreateError("id' или 'lit");
                 return false;
             }
             analysisBauerSamelsohn = new AnalysisBauerSamelsohn(array, lexicalAnalysis);

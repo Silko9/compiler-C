@@ -54,7 +54,7 @@ namespace Lab_afl
                 {
                     if (!StatusI())
                     {
-                        error = "Идентификатор не может быть больше 8 символов.";
+                        error = "Ошибка лексики.\nИдентификатор не может быть больше 8 символов.";
                         return false;
                     }
                     continue;
@@ -63,7 +63,7 @@ namespace Lab_afl
                 {
                     if (!StatusD())
                     {
-                        error = "Идентификатор не может начинаться с цифры.";
+                        error = "Ошибка лексики.\nИдентификатор не может начинаться с цифры.";
                         return false;
                     }
                     continue;
@@ -105,7 +105,7 @@ namespace Lab_afl
                 }
                 if (!StatusR())
                 {
-                    error = $"Ошибка синтаксиса: символа '{stackError}' нет в словаре.";
+                    error = $"Ошибка лексики.\nCимвола '{stackError}' нет в словаре.";
                     return false;
                 }
             }

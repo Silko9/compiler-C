@@ -8,9 +8,8 @@ namespace Lab_afl
         {
             InitializeComponent();
             for (int i = 0; i < lexical.dataLexeme.Count; i++)
-                dataGridView1.Rows.Add(i, lexical.dataLexeme[i].str, lexical.dataLexeme[i].index);
-            for (int i = 0; i < lexical.dataClassification.Count; i++)
-                dataGridView2.Rows.Add(i, lexical.dataClassification[i].tableType, lexical.dataClassification[i].itemNumber);
+                dataGridView1.Rows.Add(i, lexical.dataLexeme[i].str, lexical.dataLexeme[i].index, lexical.dataClassification[i].tableType, lexical.dataClassification[i].itemNumber);
+
             for (int i = 0; i < lexical.keywords.Length; i++)
                 dataGridView3.Rows.Add(i, lexical.keywords[i]);
             for (int i = 0; i < lexical.separator.Length; i++)
@@ -24,7 +23,7 @@ namespace Lab_afl
         }
         private void buttonClose_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
     }
 }

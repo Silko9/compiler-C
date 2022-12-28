@@ -10,7 +10,7 @@ namespace Lab_afl
         public FormMain()
         {
             InitializeComponent();
-            openFileDialog1.Filter = "Text files(*.txt)|*.txt|All files(*.*)|*.*";
+            openFileDialog1.Filter = "Text files(*.txt)|*.txt";
             richTextBox1.Text = "void main() {\r\na = 5+5;\r\n}\r\n";
             TranslatorProcess();
         }
@@ -18,9 +18,10 @@ namespace Lab_afl
         {
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
+                string name = openFileDialog1.FileName;
                 richTextBox1.Clear();
                 StreamReader sr = File.OpenText(openFileDialog1.FileName);
-                string line = null;
+                string line;
                 line = sr.ReadLine();
                 while (line != null)
                 {
@@ -52,7 +53,7 @@ namespace Lab_afl
         {
             int i = richTextBox1.SelectionStart;
             richTextBox1.Text += '\n';
-            if (translator.Scanner(richTextBox1.Text))
+            if (translator.Process(richTextBox1.Text))
                 richTextBox2.Text = "Ошибок нет.";
             else
                 richTextBox2.Text = translator.Error;

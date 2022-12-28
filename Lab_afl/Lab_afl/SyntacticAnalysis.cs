@@ -6,7 +6,7 @@ namespace Lab_afl
     public class SyntacticAnalysis
     {
         LexicalAnalysis lexicalAnalysis;
-        public AnalysisBauerSamelsohn analysisBauerSamelsohn;
+        AnalysisBauerSamelsohn analysisBauerSamelsohn;
         public List<OperationMatrix> arithmeticOperatorMatrix = new List<OperationMatrix>();
         List<DataClassification> dataClassification;
         string Lexem;

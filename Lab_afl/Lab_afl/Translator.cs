@@ -9,7 +9,7 @@
         string error;
         public string Error { get { return error; } }
         public Translator(){}
-        public bool Scanner(string str)
+        public bool Process(string str)
         {
             lexical = new LexicalAnalysis(str);
             if (lexical.Scanner())

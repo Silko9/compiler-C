@@ -3,7 +3,7 @@ namespace Lab_afl
 {
     public class LexicalAnalysis
     {
-        public string stack = "";
+        string stack = "";
         public string[] keywords = new string[11] { "main", "void", "int", "double", "float", "string", "char", "switch", "case", "break", "default" };//ключевые слова(1 таблица)
         public string[] separator = new string[12] { "(", ")", "{", "}", ",", ";", ":", "=", "+", "-", "*", "/"};//разделители(2 таблица)
         public List<string> identifier = new List<string>();//индификатор(3 таблица)
@@ -42,10 +42,6 @@ namespace Lab_afl
             }
         }
         public bool Scanner()
-        {
-            return LexicalAnalysis_();
-        }
-        private bool LexicalAnalysis_()
         {
             Next();
             while (index <= str.Length)

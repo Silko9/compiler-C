@@ -184,7 +184,10 @@ namespace Lab_afl
         private bool Procedure_условный_оператор_X()
         {
             if (Lexem == "}")
+            {
+                if (!Next("';'")) return false;
                 return true;
+            }
             if (Lexem == "break")
             {
                 if (!Next("';'")) return false;
